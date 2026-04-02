@@ -9,6 +9,20 @@ End-to-end Retrieval-Augmented Generation (RAG) demo for QA assets, built with:
 
 This project is optimized for test-case intelligence workflows (especially healthcare-style QA content), with support for both test cases and user stories.
 
+## Project summary
+
+RAG Mongo Demo v7 is a QA intelligence platform that combines MongoDB hybrid retrieval (Vector + BM25), LLM-assisted reranking/summarization, and an enterprise-style metrics evaluation pipeline.
+
+Recent Metrics Evaluation additions include:
+- DeepEval and Ragas evaluator support behind a single backend contract (`/api/evaluate`)
+- Ragas-visible metric options in UI (`context_precision`, `context_recall`) alongside DeepEval naming (`contextual_precision`, `contextual_recall`)
+- Per-metric diagnostics in response and UI:
+  - `explanation`
+  - `input_arguments` (`input`, `actual_output`, `expected_output`, `retrieval_context`)
+  - `score_breakdown` (`matched_token_count`, `reference_token_count`, token details)
+- Route-level observability fields for every evaluation request:
+  - `request_id`, `latency_ms`, `error_class`, `retries`, `evaluator`, `fallback_used`
+
 ---
 
 ## What this project does
@@ -206,11 +220,14 @@ Current architecture:
 - Backend returns normalized metric payload with observability metadata
 
 Metric families in the UI flow:
-- Faithfulness
-- Answer relevancy
-- Contextual precision
-- Contextual recall
-- Hallucination score
+- Shared metrics: Faithfulness, Answer Relevancy
+- DeepEval contextual metrics: Contextual Precision, Contextual Recall, Contextual Relevancy
+- Ragas contextual metrics: Context Precision, Context Recall
+
+Recently added metrics behavior:
+- Metric cards show evaluator/source badge (`ragas`, `deepeval`, or fallback source).
+- Explanations now include descriptive fallback reasoning when model-based reasoning is unavailable.
+- Metric alias compatibility is supported across frameworks (`contextual_precision` <-> `context_precision`, `contextual_recall` <-> `context_recall`).
 
 Current note:
 - Metrics UI now routes through backend bridge (`/api/evaluate`) only.
